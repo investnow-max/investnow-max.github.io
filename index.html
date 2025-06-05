@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>InvestNow - Secure Investment Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { background: #f4f7fa; }
+        .dashboard-card { background: #fff; border-radius: 14px; padding: 2rem; box-shadow: 0 2px 16px rgba(0,0,0,0.07);}
+        .summary-card { min-width: 150px; }
+        .table-responsive { margin-top: 1.5rem; }
+        .form-control:focus { box-shadow: 0 0 0 0.2rem #2ecc7125; }
+        .nav-link.active { font-weight: bold; color: #198754 !important; }
+        .landing-hero {
+            background: linear-gradient(120deg, #e0ffe8 0%, #f4f7fa 100%);
+            border-radius: 20px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+            padding: 3rem 2rem 2rem 2rem;
+            margin-bottom: 2rem;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            color: #198754;
+        }
+        #signup-welcome {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            min-width: 320px;
+            display: none;
+        }
+        footer {
+            margin-top: 60px;
+        }
+        @media (max-width: 767px) {
+            .dashboard-card, .landing-hero { padding: 1rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-success" href="#home" id="nav-home"><i class="fas fa-chart-line"></i> InvestNow</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav" id="nav-links">
+                    <!-- Dynamic nav links -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Welcome message after signup -->
+    <div class="alert alert-success text-center" id="signup-welcome">
+        <i class="fas fa-user-check"></i>
+        Welcome! Your account has been created and you are now logged in.
+    </div>
+
+    <!-- Landing Page Section -->
+    <div class="container my-5" id="landing-section">
+        <div class="landing-hero text-center mb-4">
+            <h1 class="display-5 fw-bold mb-3">Grow Your Wealth with InvestNow</h1>
+            <p class="lead mb-4">Simple, secure, and transparent investment opportunities. Track your returns and manage your portfolio in real time.</p>
+            <button class="btn btn-success btn-lg px-5" id="get-started-btn"><i class="fas fa-play-circle"></i> Get Started</button>
+        </div>
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="feature-icon mb-3"><i class="fas fa-lock"></i></div>
+                    <h5>Secure &amp; Private</h5>
+                    <p>Your data and investments are protected with industry-leading security.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="feature-icon mb-3"><i class="fas fa-chart-line"></i></div>
+                    <h5>Real-Time Returns</h5>
+                    <p>Monitor your investment growth and returns instantly from your dashboard.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <div class="feature-icon mb-3"><i class="fas fa-user-check"></i></div>
+                    <h5>User-Friendly</h5>
+                    <p>Easy sign up, intuitive dashboard, and helpful support at every step.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Form -->
+    <div class="container my-5" id="login-section" style="max-width: 400px; display:none;">
+        <div class="card p-4 shadow-sm">
+            <h3 class="mb-3">Login</h3>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="login-username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="login-username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="login-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Login</button>
+            </form>
+            <div class="mt-3 text-center">
+                <a href="#signup" id="show-signup">Don't have an account? Sign up</a>
+            </div>
+            <div id="login-alert" class="alert alert-danger mt-3 d-none" role="alert"></div>
+        </div>
+    </div>
+
+    <!-- Signup Form -->
+    <div class="container my-5" id="signup-section" style="max-width: 400px; display:none;">
+        <div class="card p-4 shadow-sm">
+            <h3 class="mb-3">Sign Up</h3>
+            <form id="signupForm">
+                <div class="mb-3">
+                    <label for="signup-username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="signup-username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signup-password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="signup-password" required>
+                </div>
+                <button type="submit" class="btn btn-success w-100">Sign Up</button>
+            </form>
+            <div class="mt-3 text-center">
+                <a href="#login" id="show-login">Already have an account? Log in</a>
+            </div>
+            <div id="signup-alert" class="alert alert-danger mt-3 d-none" role="alert"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard-card mx-auto" id="dashboard-section" style="max-width: 950px; display:none;">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+            <div>
+                <h2 class="mb-1">Welcome, <span id="userName"></span></h2>
+                <p class="mb-0 text-muted">Track your investments and returns in real time.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-3">
+                <div class="summary-card p-3 bg-success text-white rounded-3 text-center shadow-sm">
+                    <div class="fs-5"><i class="fas fa-wallet"></i></div>
+                    <div class="fs-6">Total Invested</div>
+                    <div class="fs-4 fw-bold" id="totalInvested">$0.00</div>
+                </div>
+                <div class="summary-card p-3 bg-info text-white rounded-3 text-center shadow-sm">
+                    <div class="fs-5"><i class="fas fa-coins"></i></div>
+                    <div class="fs-6">Total Returns</div>
+                    <div class="fs-4 fw-bold" id="totalReturns">$0.00</div>
+                </div>
+            </div>
+        </div>
+        <!-- Available Investments Section -->
+        <div class="mb-4" id="available-investments-section">
+            <h4 class="mb-3">Available Investment Opportunities</h4>
+            <div class="row" id="availableInvestmentsList"></div>
+        </div>
+        <!-- Your Investments Table -->
+        <div class="table-responsive">
+            <h4 class="mb-3">Your Investments</h4>
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount ($)</th>
+                        <th>Return ($)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="investmentTable"></tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            <h4 class="mb-3">Add New Investment</h4>
+            <form id="investmentForm" class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label for="amount" class="form-label">Amount ($)</label>
+                    <input type="number" min="100" step="0.01" class="form-control" id="amount" placeholder="Enter amount" required>
+                </div>
+                <div class="col-12 col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus-circle"></i> Invest Now</button>
+                </div>
+            </form>
+            <div id="formAlert" class="alert alert-success mt-3 d-none" role="alert">
+                Investment added successfully!
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (matches header style) -->
+    <footer class="bg-white shadow-sm border-top">
+      <div class="container py-4">
+        <div class="row align-items-center">
+          <!-- Brand and tagline -->
+          <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+            <span class="fw-bold text-success fs-5"><i class="fas fa-chart-line"></i> InvestNow</span>
+            <span class="d-block small text-muted mt-1">Your trusted platform for secure and transparent investments.</span>
+          </div>
+          <!-- Quick Links -->
+          <div class="col-md-4 text-center mb-3 mb-md-0">
+            <ul class="list-inline mb-0">
+              <li class="list-inline-item"><a href="#home" class="text-muted text-decoration-none footer-link" data-section="landing">Home</a></li>
+              <li class="list-inline-item"><a href="#login" class="text-muted text-decoration-none footer-link" data-section="login">Login</a></li>
+              <li class="list-inline-item"><a href="#signup" class="text-muted text-decoration-none footer-link" data-section="signup">Sign Up</a></li>
+              <li class="list-inline-item"><a href="#dashboard" class="text-muted text-decoration-none footer-link" data-section="dashboard">Dashboard</a></li>
+            </ul>
+          </div>
+          <!-- Social Media -->
+          <div class="col-md-4 text-center text-md-end">
+            <a href="#" class="text-success me-3 fs-5"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="text-success me-3 fs-5"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-success me-3 fs-5"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="text-success fs-5"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <hr class="my-3">
+        <div class="text-center small text-muted">
+          &copy; 2025 InvestNow. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- Available Investment Plans ---
+        const availableInvestments = [
+            {
+                id: 1,
+                name: "Fixed Income Plan",
+                description: "Earn 6% annual interest. Minimum $500.",
+                minAmount: 500,
+                rate: 0.06
+            },
+            {
+                id: 2,
+                name: "Growth Fund",
+                description: "Projected 10% annual return. Minimum $1000.",
+                minAmount: 1000,
+                rate: 0.10
+            },
+            {
+                id: 3,
+                name: "Short-Term Bond",
+                description: "4% for 6 months. Minimum $300.",
+                minAmount: 300,
+                rate: 0.04
+            }
+        ];
+
+        function renderAvailableInvestments() {
+            const container = document.getElementById('availableInvestmentsList');
+            if (!container) return;
+            container.innerHTML = '';
+            availableInvestments.forEach(plan => {
+                container.innerHTML += `
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-success">${plan.name}</h5>
+                                <p class="card-text flex-grow-1">${plan.description}</p>
+                                <div class="mb-2"><small>Min: $${plan.minAmount.toLocaleString()}</small></div>
+                                <button class="btn btn-outline-success w-100 invest-btn" 
+                                    data-id="${plan.id}" 
+                                    data-min="${plan.minAmount}" 
+                                    data-rate="${plan.rate}">
+                                    Invest in this
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            // Add event listeners to "Invest" buttons
+            document.querySelectorAll('.invest-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.getElementById('amount').value = this.getAttribute('data-min');
+                    document.getElementById('amount').focus();
+                });
+            });
+        }
+
+        // --- State Management ---
+        let currentUser = null;
+
+        // Demo: store users and investments in localStorage
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users') || '{}');
+        }
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+        function getInvestments() {
+            if (!currentUser) return [];
+            return JSON.parse(localStorage.getItem('investments_' + currentUser) || '[]');
+        }
+        function saveInvestments(investments) {
+            if (!currentUser) return;
+            localStorage.setItem('investments_' + currentUser, JSON.stringify(investments));
+        }
+        function setCurrentUser(username) {
+            currentUser = username;
+            if (username) {
+                localStorage.setItem('currentUser', username);
+            } else {
+                localStorage.removeItem('currentUser');
+            }
+        }
+        function getCurrentUser() {
+            return localStorage.getItem('currentUser');
+        }
+
+        // --- Navigation ---
+        function renderNav() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.innerHTML = '';
+            if (currentUser) {
+                navLinks.innerHTML = `
+                    <li class="nav-item"><a href="#dashboard" class="nav-link active" id="nav-dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a href="#logout" class="nav-link" id="nav-logout">Logout</a></li>
+                `;
+            } else {
+                navLinks.innerHTML = `
+                    <li class="nav-item"><a href="#home" class="nav-link active" id="nav-home-link">Home</a></li>
+                    <li class="nav-item"><a href="#login" class="nav-link" id="nav-login">Login</a></li>
+                    <li class="nav-item"><a href="#signup" class="nav-link" id="nav-signup">Sign Up</a></li>
+                `;
+            }
+            // Attach events
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', navHandler);
+            });
+        }
+
+        function navHandler(e) {
+            e.preventDefault();
+            const id = e.target.id;
+            if (id === 'nav-dashboard') {
+                navigateTo('dashboard');
+            } else if (id === 'nav-login') {
+                navigateTo('login');
+            } else if (id === 'nav-signup') {
+                navigateTo('signup');
+            } else if (id === 'nav-logout') {
+                logout();
+            } else if (id === 'nav-home-link' || id === 'nav-home') {
+                navigateTo('landing');
+            }
+        }
+
+        // --- Section Display ---
+        function showSection(section) {
+            document.getElementById('landing-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('signup-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'none';
+            if (section === 'dashboard') {
+                if (!currentUser) {
+                    showSection('login');
+                    return;
+                }
+                document.getElementById('dashboard-section').style.display = '';
+                document.getElementById('userName').innerText = currentUser;
+                renderAvailableInvestments(); // Show available investments
+                renderInvestments();
+                updateTotals();
+            } else if (section === 'login') {
+                document.getElementById('login-section').style.display = '';
+                document.getElementById('login-alert').classList.add('d-none');
+            } else if (section === 'signup') {
+                document.getElementById('signup-section').style.display = '';
+                document.getElementById('signup-alert').classList.add('d-none');
+            } else if (section === 'landing' || section === 'home') {
+                document.getElementById('landing-section').style.display = '';
+            }
+        }
+
+        // --- SPA Navigation with Hash ---
+        function navigateTo(section) {
+            let hash = '';
+            if (section === 'landing' || section === 'home') hash = '#home';
+            else if (section === 'login') hash = '#login';
+            else if (section === 'signup') hash = '#signup';
+            else if (section === 'dashboard') hash = '#dashboard';
+            window.location.hash = hash;
+            showSection(section);
+        }
+
+        function handleHashChange() {
+            let hash = window.location.hash.replace('#', '');
+            if (!hash || hash === 'home') hash = 'landing';
+            if (hash === 'dashboard' && !currentUser) hash = 'login';
+            showSection(hash);
+            renderNav();
+        }
+
+        window.addEventListener('hashchange', handleHashChange);
+
+        // --- Auth Events ---
+        document.getElementById('show-signup').onclick = function(e) {
+            e.preventDefault();
+            navigateTo('signup');
+        };
+        document.getElementById('show-login').onclick = function(e) {
+            e.preventDefault();
+            navigateTo('login');
+        };
+
+        document.getElementById('loginForm').onsubmit = function(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            const users = getUsers();
+            if (users[username] && users[username] === password) {
+                setCurrentUser(username);
+                currentUser = username;
+                renderNav();
+                navigateTo('dashboard');
+            } else {
+                const alert = document.getElementById('login-alert');
+                alert.innerText = "Invalid username or password.";
+                alert.classList.remove('d-none');
+            }
+        };
+
+        document.getElementById('signupForm').onsubmit = function(e) {
+            e.preventDefault();
+            const username = document.getElementById('signup-username').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const users = getUsers();
+            if (users[username]) {
+                const alert = document.getElementById('signup-alert');
+                alert.innerText = "Username already exists.";
+                alert.classList.remove('d-none');
+                return;
+            }
+            users[username] = password;
+            saveUsers(users);
+            setCurrentUser(username);
+            currentUser = username;
+            renderNav();
+            navigateTo('dashboard');
+            // Show welcome message
+            const welcome = document.getElementById('signup-welcome');
+            welcome.style.display = '';
+            setTimeout(() => { welcome.style.display = 'none'; }, 3000);
+        };
+
+        function logout() {
+            setCurrentUser(null);
+            currentUser = null;
+            renderNav();
+            navigateTo('landing');
+        }
+
+        // --- Investments ---
+        function renderInvestments() {
+            const table = document.getElementById('investmentTable');
+            const investments = getInvestments();
+            table.innerHTML = '';
+            investments.forEach(inv => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${inv.date}</td>
+                        <td>$${inv.amount.toLocaleString(undefined, {minimumFractionDigits:2})}</td>
+                        <td>$${inv.return.toLocaleString(undefined, {minimumFractionDigits:2})}</td>
+                        <td><span class="badge ${inv.status === 'Active' ? 'bg-success' : 'bg-secondary'}">${inv.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateTotals() {
+            const investments = getInvestments();
+            let totalInvested = investments.reduce((sum, inv) => sum + inv.amount, 0);
+            let totalReturn = investments.reduce((sum, inv) => sum + inv.return, 0);
+            document.getElementById('totalInvested').innerText = '$' + totalInvested.toLocaleString(undefined, {minimumFractionDigits:2});
+            document.getElementById('totalReturns').innerText = '$' + totalReturn.toLocaleString(undefined, {minimumFractionDigits:2});
+        }
+
+        document.getElementById('investmentForm').onsubmit = function(e) {
+            e.preventDefault();
+            const amountInput = document.getElementById('amount');
+            const amount = parseFloat(amountInput.value);
+            if (isNaN(amount) || amount < 100) {
+                amountInput.classList.add('is-invalid');
+                return;
+            }
+            amountInput.classList.remove('is-invalid');
+            const today = new Date();
+            const dateStr = today.toISOString().slice(0,10);
+            const estimatedReturn = +(amount * 0.06).toFixed(2);
+            let investments = getInvestments();
+            investments.unshift({
+                date: dateStr,
+                amount: amount,
+                return: estimatedReturn,
+                status: 'Active'
+            });
+            saveInvestments(investments);
+            renderInvestments();
+            updateTotals();
+            const alert = document.getElementById('formAlert');
+            alert.classList.remove('d-none');
+            setTimeout(() => alert.classList.add('d-none'), 2000);
+            this.reset();
+        };
+
+        // --- Footer Quick Links Navigation ---
+        function attachFooterLinks() {
+            document.querySelectorAll('.footer-link').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const section = e.target.getAttribute('data-section');
+                    navigateTo(section);
+                });
+            });
+        }
+
+        // --- App Initialization ---
+        document.getElementById('get-started-btn').onclick = function() {
+            navigateTo('signup');
+        };
+        document.getElementById('nav-home').onclick = function(e) {
+            e.preventDefault();
+            navigateTo('landing');
+        };
+
+        window.onload = function() {
+            currentUser = getCurrentUser();
+            renderNav();
+            attachFooterLinks();
+            // On load, handle hash or default to landing/dashboard
+            let hash = window.location.hash.replace('#', '');
+            if (!hash || hash === 'home') hash = 'landing';
+            if (hash === 'dashboard' && !currentUser) hash = 'login';
+            showSection(hash);
+        };
+    </script>
+</body>
+</html>
